@@ -1,4 +1,5 @@
-const apiKey = '416e0f0dd8c8e9042517b54f30bf565c';
+const apiKey = 'b6c342321e2f4657b56ad5258418d598';
+const URL = 'https://api.weatherbit.io/v2.0/current';
 let latitude;
 let longitude;
 const notification = document.getElementsByClassName('notification')[0];
@@ -20,18 +21,25 @@ function onSuccess(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
 
-    const weatherCall = fetch('https://api.openweathermap.org/data/2.5/weather?'
+    const weatherCall = fetch(URL + '?'
                             + 'lat=' + latitude
                             + '&lon=' + longitude
-                            + '&appid=' + apiKey);
+                            + '&key=' + apiKey);
 
     weatherCall.then(response => response.json())
             .then(weatherInfo => {
-                console.log(weatherInfo)
-                console.log(weatherInfo.weather[0].icon);
-                console.log(kelvinToCelsius(weatherInfo.main.temp).toFixed(1));
-                console.log(weatherInfo.weather[0].main);
-                console.log(weatherInfo.name);
+                console.log(weatherInfo);
+                let tempIcon = document.querySelector("#temp-value");
+                tempIcon.innerHTML = weatherInfo.data[0].temp;
+
+                
+                console.log(weatherInfo.data[0].temp);
+                console.log(weatherInfo.data[0].weather.icon);
+                console.log(weatherInfo.data[0].weather.description);
+                console.log(weatherInfo.data[0].city_name);
+                //console.log(kelvinToCelsius(weatherInfo.main.temp).toFixed(1));
+                //console.log(weatherInfo.weather[0].main);
+                //console.log(weatherInfo.name);
             });
 }
 
