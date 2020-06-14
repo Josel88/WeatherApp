@@ -6,7 +6,7 @@ body{
     background-color: #293251;
 }
 
-.container{
+.container-card{
     width: 300px;    
     background-color: #FFF;
     
@@ -16,6 +16,8 @@ body{
     border-radius: 10px;
     padding-bottom : 50px;
 }
+
+
 
 .app-title{
     width: 300px;

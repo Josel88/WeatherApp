@@ -1,24 +1,24 @@
+import {cities} from "./CitiesRepository.js"
+import {getWeather} from "./LocationService.js"
+
 main();
 
 
 function main () {
-    navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
+    navigator.geolocation.getCurrentPosition (onCurrentPositionReceived, locationError);
+    // onAllPositionsReceived ();
 }
 
+function onCurrentPositionReceived (position) {
+    const { latitude, longitude } = position.coords
+    cities.unshift({ latitude, longitude })
+    console.log(cities);
+    onAllPositionsReceived ();
+}
 
-function getWeather (latitude, longitude) {
-    const url = 'https://api.weatherbit.io/v2.0/current?key=b6c342321e2f4657b56ad5258418d598&lat='+ latitude  + '&lon=' + longitude
-    // throw new Error();
-  return fetch(url)
-  .then(response => {
-      if (!response.ok) {
-          throw new Error(response.status);
-      }
-      return response.json();
-  })
-  
- }
-
+async function onAllPositionsReceived () {
+    Promise.all(await cities.forEach(onLocationSuccess));
+}
 
 
 const render = (myJson, error) => {
@@ -67,13 +67,9 @@ const render = (myJson, error) => {
 
 }
 
-function locationError (error) {
-    render(null, error); 
-}
-
-async function locationSuccess (position) {
-    const latitude  = position.coords.latitude;
-    const longitude = position.coords.longitude;
+async function onLocationSuccess (position) {
+    const latitude  = position.latitude;
+    const longitude = position.longitude;
     try {
     const dateWeather = await getWeather (latitude, longitude);
     console.log(dateWeather);
@@ -84,5 +80,13 @@ async function locationSuccess (position) {
   }
 
 }
+
+function locationError (error) {
+    render(null, error); 
+}
+
+
+
+
 
 
