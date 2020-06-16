@@ -12,14 +12,18 @@ function main () {
 function onCurrentPositionReceived (position) {
     const { latitude, longitude } = position.coords
     cities.unshift({ latitude, longitude })
-    console.log(cities);
     onAllPositionsReceived ();
 }
 
 async function onAllPositionsReceived () {
-    Promise.all(await cities.forEach(onLocationSuccess));
+    try {
+        const results = await Promise.all(cities.map(onLocationSuccess));
+        results.forEach(result => render(result.data[0]))
+    }
+    catch(error) {
+        locationError(error);
+    }
 }
-
 
 const render = (myJson, error) => {
     const containerCard = document.createElement("div");
@@ -67,23 +71,16 @@ const render = (myJson, error) => {
 
 }
 
-async function onLocationSuccess (position) {
-    const latitude  = position.latitude;
+function onLocationSuccess (position) {
+    const latitude = position.latitude;
     const longitude = position.longitude;
-    try {
-    const dateWeather = await getWeather (latitude, longitude);
-    console.log(dateWeather);
-    
-    render(dateWeather.data[0])
-} catch (error) {
-    render(null, error); 
-  }
-
+    return getWeather (latitude, longitude);
 }
 
 function locationError (error) {
     render(null, error); 
 }
+
 
 
 
